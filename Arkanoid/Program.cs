@@ -14,7 +14,7 @@ namespace Arkanoid
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -52,6 +52,7 @@ namespace Arkanoid
                         Console.Write("^");
                     }
                     else if (map[i, j] == 1) Console.Write("#");
+                    else if (map[i, j] == 2) Console.Write("@");
                     else Console.Write(" ");
                 }
                 Console.WriteLine();
@@ -76,15 +77,18 @@ namespace Arkanoid
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
+            Console.SetWindowSize(34, 21);
+            Console.SetBufferSize(34, 21);
             while(true)
             {
                 Move();
-                FireBall();
+                GameLogic();
                 DrawField();
                 KeyRead();
             }
         }
-        static void FireBall()
+
+        static void GameLogic()
         {
             for (int i = 0; i < map.GetLength(0); i++)
             {
@@ -92,8 +96,27 @@ namespace Arkanoid
                 {
                     if (map[i, j] == -1)
                     {
-                        if(i - 1 >= 0) map[i - 1, j] = -1;
+                        if (i - 1 >= 0)
+                        {
+                            if(map[i - 1, j] == 0) map[i - 1, j] = -1;
+                            else map[i - 1, j] = 0;
+                        }
                         map[i, j] = 0;
+                    }
+                }
+            }
+
+            for (int i = map.GetLength(0) - 1; i > 0; i--)
+            {
+                for (int j = map.GetLength(1) - 1; j > 0; j--)
+                {
+                    if (map[i, j] == 2)
+                    {
+                        if (i + 1 < map.GetLength(0))
+                        {
+                            map[i + 1, j] = 2;
+                            map[i, j] = 0;
+                        }
                     }
                 }
             }
